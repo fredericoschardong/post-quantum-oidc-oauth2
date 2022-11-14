@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+    <title>IdP</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <span class="navbar-brand mb-0 h1" href="#">Example IdP</span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        {% if category == "success" %}
+        <div class="alert alert-success mt-2" role="alert">
+            {{ message }}
+        </div>
+        {% elif category == "error"%}
+        <div class="alert alert-danger mt-2" role="alert">
+            {{ message }}
+        </div>
+        {% else %}
+        <div class="alert alert-primary mt-2" role="alert">
+            {{ message }}
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {% block body %}
+        <p>Default layout</p>
+        {% endblock %}
+    </div>
+    <footer class="footer">
+        <div class="container">
+
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,94 @@
+version: '3.2'
+
+services:
+  op:
+    build:
+      context: op
+      args:
+        OP_IP: $OP_IP
+        SUBJECT_ALT_NAME_TYPE: $SUBJECT_ALT_NAME_TYPE
+    restart: always
+    init: true
+    environment:
+      TLS_SIGN: $TLS_SIGN
+      JWT_SIGN: $JWT_SIGN
+      OP_IP: $OP_IP
+      RP_IP: $RP_IP
+      LOG_LEVEL: $LOG_LEVEL
+      SAVE_TLS_DEBUG: $SAVE_TLS_DEBUG
+      TIMEOUT: $TIMEOUT
+      SUBJECT_ALT_NAME_TYPE: $SUBJECT_ALT_NAME_TYPE
+    volumes:
+      - ./op/app:/app
+      - op_certs:/op_certs
+    ports:
+      - 8080:8080
+
+  op-tcpdump:
+    image: nicolaka/netshoot
+    command: nice -20 tcpdump -B 204800 -i any "tcp" -w /data/TLS=$TLS_SIGN.pcap
+    network_mode: service:op
+    environment:
+      TLS_SIGN: $TLS_SIGN
+    volumes:
+      - $PWD/op/tcpdump:/data
+    depends_on:
+      - op
+
+  rp:
+    build:
+      context: rp
+      args:
+        RP_IP: $RP_IP
+        SUBJECT_ALT_NAME_TYPE: $SUBJECT_ALT_NAME_TYPE
+    restart: always
+    init: true
+    environment:
+      TLS_SIGN: $TLS_SIGN
+      JWT_SIGN: $JWT_SIGN
+      RP_IP: $RP_IP
+      OP_IP: $OP_IP
+      LOG_LEVEL: $LOG_LEVEL
+      SAVE_TLS_DEBUG: $SAVE_TLS_DEBUG
+      TIMEOUT: $TIMEOUT
+      SUBJECT_ALT_NAME_TYPE: $SUBJECT_ALT_NAME_TYPE
+    volumes:
+      - ./rp/app:/app
+      - rp_certs:/rp_certs
+      - op_certs:/op_certs:ro
+
+  user_agent:
+    build: user_agent
+    init: true
+    environment:
+      TLS_SIGN: $TLS_SIGN
+      JWT_SIGN: $JWT_SIGN
+      RP_IP: $RP_IP
+      OP_IP: $OP_IP
+      DELAY_START: $DELAY_START
+      DELAY_BETWEEN: $DELAY_BETWEEEN
+      REPEAT: $REPEAT
+      LOG_LEVEL: $LOG_LEVEL
+      TEST: $TEST
+      SAVE_TLS_DEBUG: $SAVE_TLS_DEBUG
+      TIMEOUT: $TIMEOUT
+    volumes:
+      - ./user_agent/app:/app
+      - rp_certs:/rp_certs
+      - op_certs:/op_certs
+
+  user_agent-tcpdump:
+    image: nicolaka/netshoot
+    command: nice -20 tcpdump -B 204800 -i any "tcp" -w /data/TLS=$TLS_SIGN.pcap
+    network_mode: service:user_agent
+    environment:
+      TLS_SIGN: $TLS_SIGN
+    volumes:
+      - $PWD/user_agent/tcpdump:/data
+    depends_on:
+      - user_agent
+
+volumes:
+  op_certs:
+  rp_certs:
+

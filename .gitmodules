@@ -1,0 +1,12 @@
+[submodule "op/app/post-quantum-pyjwkest"]
+	path = op/app/post-quantum-pyjwkest
+	url = https://github.com/fredericoschardong/post-quantum-pyjwkest
+[submodule "op/app/post-quantum-pyoidc"]
+	path = op/app/post-quantum-pyoidc
+	url = https://github.com/fredericoschardong/post-quantum-pyoidc
+[submodule "rp/app/post-quantum-pyjwkest"]
+	path = rp/app/post-quantum-pyjwkest
+	url = https://github.com/fredericoschardong/post-quantum-pyjwkest
+[submodule "rp/app/post-quantum-pyoidc"]
+	path = rp/app/post-quantum-pyoidc
+	url = https://github.com/fredericoschardong/post-quantum-pyoidc

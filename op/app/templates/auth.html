@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<form name='auth' action="/protocol/openid-connect/auth" method="post">
+  <input type="text" id="username" name="username">
+  <label for="username">Username</label><br>
+
+  <input type="password" id="password" name="password">
+  <label for="password">Password</label><br>
+  
+  <input type="hidden" id="state" name="state" value="{{ state }}">
+
+  <input type="submit" name="submit" value="Submit">
+</form>
+
+{% endblock %}
