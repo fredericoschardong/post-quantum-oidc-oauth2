@@ -125,7 +125,7 @@ OP_IP=$OP_IP RP_IP=$RP_IP LOG_LEVEL=DEBUG TLS_SIGN=rsa JWT_SIGN=rsa REPEAT=1 doc
 if [ $? -eq 0 ]; then
     echo -e "\n\n\n"
     echo "Apparently everything is working! You can now run the realistic tests with:"
-    echo "OP_IP=$OP_IP RP_IP=$RP_IP AMAZON_USER=$AMAZON_USER AMAZON_PEM_FILE=$AMAZON_PEM_FILE LOG_LEVEL=DEBUG ./make_all_tables.sh &"
+    echo "OP_IP=$OP_IP RP_IP=$RP_IP AMAZON_USER=$AMAZON_USER AMAZON_PEM_FILE=$AMAZON_PEM_FILE LOG_LEVEL=DEBUG ./run_experiments.sh &"
 else
     echo "Something went wrong!"
 fi
