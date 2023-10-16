@@ -89,6 +89,8 @@ docker rmi -f $(docker images -a --filter=dangling=true -q)
 docker system prune -a --volumes -f
 ```
 
+3. If you want to evaluate the TLS handshake times like we did in our paper, you can use [our tool built for this purpose](https://sol.sbc.org.br/index.php/sbseg_estendido/article/view/21693/21517).
+
 ## Usage Examples:
 
 Run with no TLS; JWT using RSA; and 100 tests locally:
