@@ -8,7 +8,7 @@ We used [docker](https://www.docker.com/) to conternize our implementation of Op
 
 Run `git submodule init` and `git submodule update` to download the required submodules.
 
-You need to have at least `docker` and `docker-compose` to run our realistic use case. If you want to reproduce the results from our paper locally (i.e. ignoring latency), you need to have `mergecap`, `gnuplot` and `traceroute`. Finally, to reproduce our tests in real-world conditions, you will need to rent Amazon EC2 instances (other vendors should work fine) and also have `ssh` installed.
+You need to have at least `docker` and `docker compose` to run our realistic use case. If you want to reproduce the results from our paper locally (i.e. ignoring latency), you need to have `mergecap`, `gnuplot` and `traceroute`. Finally, to reproduce our tests in real-world conditions, you will need to rent Amazon EC2 instances (other vendors should work fine) and also have `ssh` installed.
 
 ## Configure
 
@@ -38,7 +38,7 @@ Less relevant variables:
 Run the following to repeat our use case ten times, using RSA for the JWT and no TLS:
 
 ```console
-TLS_SIGN= JWT_SIGN=rsa REPEAT=10 docker-compose up --exit-code-from user_agent op rp user_agent
+TLS_SIGN= JWT_SIGN=rsa REPEAT=10 docker compose up --exit-code-from user_agent op rp user_agent
 ```
 
 It produces the raw performance numbers regarding time and size, which you can find at `user_agent/app/logs/`. 
@@ -96,7 +96,7 @@ docker system prune -a --volumes -f
 Run with no TLS; JWT using RSA; and 100 tests locally:
 
 ```console
-TLS_SIGN= JWT_SIGN=rsa REPEAT=100 docker-compose up --exit-code-from user_agent op rp user_agent
+TLS_SIGN= JWT_SIGN=rsa REPEAT=100 docker compose up --exit-code-from user_agent op rp user_agent
 user_agent_1          | Storing detailed logs (times + sizes) on /app/logs/detailed/TEST=all RP=rp OP=op TLS= JWT=rsa REPEAT=100.csv
 user_agent_1          | Storing resumed logs (times + sizes) on /app/logs/resumed_TEST=all.csv
 user_agent_1          | Min time:	 0.063583
@@ -113,7 +113,7 @@ user_agent_1          | Stdev resp size: 0.000000
 
 Run with TLS using Dilithium 5, JWT using Falcon-512 and 100 tests:
 ```console
-TLS_SIGN=dilithium5 JWT_SIGN=falcon512 REPEAT=100 docker-compose up --exit-code-from user_agent op rp user_agent
+TLS_SIGN=dilithium5 JWT_SIGN=falcon512 REPEAT=100 docker compose up --exit-code-from user_agent op rp user_agent
 user_agent_1          | Storing detailed logs (times + sizes) on /app/logs/detailed/TEST=all RP=rp OP=op TLS=dilithium5 JWT=falcon512 REPEAT=100.csv
 user_agent_1          | Storing resumed logs (times + sizes) on /app/logs/resumed_TEST=all.csv
 user_agent_1          | Min time:	 0.088119
@@ -130,5 +130,18 @@ user_agent_1          | Stdev resp size: 5.125929
 
 To see what is rolling behind the scenes try this:
 ```console
-TLS_SIGN=ecdsa JWT_SIGN=rsa LOG_LEVEL=DEBUG docker-compose up --exit-code-from user_agent op rp user_agent
+TLS_SIGN=ecdsa JWT_SIGN=rsa LOG_LEVEL=DEBUG docker compose up --exit-code-from user_agent op rp user_agent
 ```
+
+## Reults
+
+If you want to produce the same images we shown in our paper:
+
+1. Run the experiments with `./run_experiments.sh` multiple times, i.e., one for each latency scenario you want to evaluate, changing the environment variables as instructed previously;
+2. Go to the `results` folder;
+3. For each experiment a folder will be created. Manually prepend to each folder's name the latency of said experiment. This is required to ensure the ploting order is correct;
+4. Run `run-tls-analyzer-all-results.sh` to extract the TLS handshake times. This might take a while. You can tweak this file to use multiple processes and speed things up (see variable N);
+3. Adapt the script `plot-paper-results.sh` as follows:
+- Change the labels of line 76 with the latencies of your experiments (i.e., the ones you manually added to each folder's name);
+- If you executed more or less than 4 experiments, you will have to change lines 76 and possibly more to adjust the graph generation to your specific use case;
+4. Run `plot-paper-results.sh` to get the results (results.csv, ratios.pdf and stacked.pdf)
